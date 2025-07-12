@@ -32,28 +32,21 @@ jobs:
         run: |
           IMAGE_TAG=${ECR_URL}:latest
           echo "🔧 Building image: $IMAGE_TAG"
-          docker buildx build -t $IMAGE_TAG .  # Build context fixed!
+          docker buildx build -t $IMAGE_TAG .  # ← build context fixed
           echo "🚀 Pushing image to ECR"
           docker push $IMAGE_TAG
 
-      - name: 🧪 Confirm Docker image is pushed
-        run: docker images | grep medusa || echo "Image missing — check tag or build"
-
       - name: 🚀 Update ECS service with latest task definition
         run: |
+          echo "🔄 Fetching latest task definition for medusa-task..."
           TASK_REVISION=$(aws ecs list-task-definitions \
             --sort DESC \
             --query "taskDefinitionArns[0]" \
             --output text | cut -d':' -f6)
 
+          echo "📦 Latest task revision: $TASK_REVISION"
+
           aws ecs update-service \
             --cluster medusa-cluster \
             --service medusa-service \
             --task-definition medusa-task:$TASK_REVISION
-
-      - name: 🔍 Print ECS service deployment status
-        run: |
-          aws ecs describe-services \
-            --cluster medusa-cluster \
-            --services medusa-service \
-            --query "services[0].deployments"
