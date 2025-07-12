@@ -28,13 +28,9 @@ jobs:
 
       - name: 🐳 Build and Push Docker image to ECR
         env:
-          ECR_URL: ${{ secrets.ECR_URL }}
+          ECR_URL: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
         run: |
-          echo "🔍 Checking if ECR_URL is set correctly..."
-          if [ -z "$ECR_URL" ]; then
-            echo "❌ ERROR: ECR_URL is empty. Please check your GitHub secrets."
-            exit 1
-          fi
+          echo "🧪 ECR_URL: $ECR_URL"
 
           IMAGE_TAG=${ECR_URL}:latest
           echo "🔧 Building Docker image: $IMAGE_TAG"
