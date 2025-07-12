@@ -27,12 +27,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: 🐳 Build and Push Docker image to ECR
+        env:
+             ECR_URL: ${{ secrets.ECR_URL }}
         run: |
-          docker build -t ${{ secrets.ECR_URL }}:latest .
-          docker push ${{ secrets.ECR_URL }}:latest
+             IMAGE_TAG=${ECR_URL}:latest
 
-      # Optional: Add Terraform apply if you're using IAC
-      # - name: ⚙️ Terraform apply
-      #   run: |
-      #     terraform init
-      #     terraform apply -auto-approve
+             echo "🔧 Building Docker image: $IMAGE_TAG"
+             docker build -t $IMAGE_TAG .
+
+             echo "🚀 Pushing image to ECR: $IMAGE_TAG"
+             docker push $IMAGE_TAG
