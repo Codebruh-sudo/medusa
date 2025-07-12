@@ -1,21 +1,23 @@
-# Use Node.js base image
+# Use a stable Node.js base image
 FROM node:18-alpine
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy only the package manifest first
 COPY package*.json ./
-RUN npm install
 
-# Copy app code
+# Install dependencies
+RUN npm install --verbose
+
+# Then copy the rest of your app
 COPY . .
 
-# Set environment variable (optional)
-ENV PORT=9000
-
-# Expose port
+# Expose the app port
 EXPOSE 9000
 
-# Start Medusa server
+# Define environment variable (optional)
+ENV PORT=9000
+
+# Start your Medusa backend
 CMD ["npm", "run", "start"]
