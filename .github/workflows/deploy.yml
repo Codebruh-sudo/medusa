@@ -1,4 +1,3 @@
-
 name: Medusa Deployment
 
 on:
@@ -29,13 +28,14 @@ jobs:
 
       - name: 🐳 Build and Push Docker image to ECR
         env:
-          ECR_URL: ${{ secrets.ECR_URL }}
+           ECR_URL: ${{ secrets.ECR_URL }}
         run: |
-          IMAGE_TAG=${ECR_URL}:latest
-          echo "🔧 Building Docker image: $IMAGE_TAG"
-          docker buildx build -t $IMAGE_TAG .  # ← this dot is critical!
-          echo "🚀 Pushing image to ECR: $IMAGE_TAG"
-          docker push $IMAGE_TAG
+           IMAGE_TAG=${ECR_URL}:latest
+           echo "🔧 Building Docker image: $IMAGE_TAG"
+           docker buildx build -t $IMAGE_TAG .  # ← this dot is the build context!
+           echo "🚀 Pushing image to ECR: $IMAGE_TAG"
+           docker push $IMAGE_TAG
+
 
 
       - name: 🚀 Update ECS service with latest task definition
