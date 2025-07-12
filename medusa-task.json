@@ -1,0 +1,27 @@
+{
+  "family": "medusa-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::573191494546:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "medusa-backend",
+      "image": "573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app:latest",
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "postgres://postgres:M3du$@SecureDB123@medusa-db.czgu80a6qan2.ap-south-1.rds.amazonaws.com:5432/medusa_db"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}
