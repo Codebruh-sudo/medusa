@@ -23,10 +23,10 @@ jobs:
     - name: 🔐 Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: 🐳 Build and push Docker image to ECR
-      run: |
-        docker build -t ${{ secrets.ECR_URL }}:latest .
-        docker push ${{ secrets.ECR_URL }}:latest
+   - name: 🐳 Build and push Docker image to ECR
+     run: |
+         docker build -t ${{ secrets.ECR_URL }}:latest .
+         docker push ${{ secrets.ECR_URL }}:latest
 
     - name: 🚀 Update ECS service with latest task definition
       run: |
