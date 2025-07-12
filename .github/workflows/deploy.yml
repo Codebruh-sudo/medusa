@@ -33,9 +33,10 @@ jobs:
         run: |
           IMAGE_TAG=${ECR_URL}:latest
           echo "🔧 Building Docker image: $IMAGE_TAG"
-          docker build -t $IMAGE_TAG .
+          docker buildx build -t $IMAGE_TAG .  # ← this dot is critical!
           echo "🚀 Pushing image to ECR: $IMAGE_TAG"
           docker push $IMAGE_TAG
+
 
       - name: 🚀 Update ECS service with latest task definition
         run: |
