@@ -1,22 +1,21 @@
-# Dockerfile (place in project root)
-
+# Use Node.js base image
 FROM node:18-alpine
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of your application code
+# Copy app code
 COPY . .
 
-# Expose the port your app runs on
-EXPOSE 3000
+# Set environment variable (optional)
+ENV PORT=9000
 
-# Command to run your app
-CMD ["npm", "start"]
+# Expose port
+EXPOSE 9000
 
-
-
+# Start Medusa server
+CMD ["npm", "run", "start"]
