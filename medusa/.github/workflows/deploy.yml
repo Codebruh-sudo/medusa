@@ -28,13 +28,12 @@ jobs:
 
       - name: 🐳 Build and Push Docker image to ECR
         env:
-          ECR_URL: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
+            ECR_URL: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
         run: |
-          echo "🧪 ECR_URL: $ECR_URL"
-
-          IMAGE_TAG=${ECR_URL}:latest
-          echo "🔧 Building Docker image: $IMAGE_TAG"
-          docker buildx build --push -t $IMAGE_TAG .
+             echo "🧪 ECR_URL: $ECR_URL"
+             IMAGE_TAG=${ECR_URL}:latest
+             echo "🔧 Building Docker image: $IMAGE_TAG"
+             docker buildx build --push -t $IMAGE_TAG -f app/Dockerfile app
 
       - name: 🚀 Update ECS service with latest task definition
         run: |
