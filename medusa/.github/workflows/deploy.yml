@@ -28,7 +28,7 @@ jobs:
 
       - name: 🐳 Build and Push Docker image to ECR
         env:
-            ECR_URL: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
+          ECR_URL: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
         run: |
           IMAGE_TAG=${ECR_URL}:latest
           echo "🔧 Building Docker image: $IMAGE_TAG"
@@ -38,14 +38,3 @@ jobs:
         run: |
           echo "🔄 Fetching latest task definition for medusa-task..."
           TASK_ARN=$(aws ecs list-task-definitions \
-            --family-prefix medusa-task \
-            --sort DESC \
-            --query "taskDefinitionArns[0]" \
-            --output text)
-
-          echo "📦 Latest task definition ARN: $TASK_ARN"
-
-          aws ecs update-service \
-            --cluster medusa-cluster \
-            --service medusa-service \
-            --task-definition $TASK_ARN
