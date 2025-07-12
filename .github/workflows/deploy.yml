@@ -32,16 +32,18 @@ jobs:
         run: |
            IMAGE_TAG=${ECR_URL}:latest
            echo "🔧 Building Docker image: $IMAGE_TAG"
-           docker buildx build -t $IMAGE_TAG .  # ← this dot is the build context!
-           echo "🚀 Pushing image to ECR: $IMAGE_TAG"
-           docker push $IMAGE_TAG
-
-
+           docker buildx build --push -t $IMAGE_TAG .
+           echo "🚀 Pushed image to ECR: $IMAGE_TAG"
 
       - name: 🚀 Update ECS service with latest task definition
         run: |
-          TASK_REVISION=$(aws ecs list-task-definitions --sort DESC --query "taskDefinitionArns[0]" --output text | cut -d':' -f6)
+          TASK_ARN=$(aws ecs list-task-definitions \
+            --family-prefix medusa-task \
+            --sort DESC \
+            --query "taskDefinitionArns[0]" \
+            --output text)
+
           aws ecs update-service \
             --cluster medusa-cluster \
             --service medusa-service \
-            --task-definition medusa-task:$TASK_REVISION
+            --task-definition $TASK_ARN
