@@ -20,22 +20,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      - name: 🔐 Login to Amazon ECR
-        run: |
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}
+      - name: 🔐 Authenticate Docker to Amazon ECR
+        run: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 573191494546.dkr.ecr.ap-south-1.amazonaws.com
 
       - name: 🛠️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: 🐳 Build and Push Docker image to ECR
-        env:
-          ECR_URL: ${{ secrets.ECR_URL }}
         run: |
-          IMAGE_TAG=${ECR_URL}:latest
+          IMAGE_TAG=573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app:latest
           echo "🔧 Building image: $IMAGE_TAG"
           docker buildx build --load -t $IMAGE_TAG .
           echo "🚀 Pushing image to ECR..."
           docker push $IMAGE_TAG
 
-      - name: ✅ Confirm ECS update
-        run: echo "Update is successful."
+      - name: 🔄 Trigger ECS deployment
+        run: aws ecs update-service --cluster medusa-cluster --service medusa-service --force-new-deployment
