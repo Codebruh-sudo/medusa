@@ -35,10 +35,6 @@ jobs:
           docker buildx build -t $IMAGE_TAG .
           echo "🚀 Pushing image to ECR"
           docker push $IMAGE_TAG
-      - name: 🚀 Update ECS service with latest task definition
-        run: |
-         echo "🔄 Updating ECS service with latest task revision..."
-         TASK_REVISION=$(aws ecs list-task-definitions --sort DESC --query "taskDefinitionArns[0]" --output text | cut -d':' -f6)
-         echo "📦 Using task revision: $TASK_REVISION"
-         aws ecs update-service --cluster medusa-cluster --service medusa-service --task-definition medusa-task:$TASK_REVISION
-                                                                                                                                                                            
+
+      - name: 🚀 Update ECS service with static task definition
+        run: aws ecs update-service --cluster medusa-cluster --service medusa-service --task-definition medusa-task
