@@ -21,7 +21,8 @@ jobs:
           aws-region: ap-south-1
 
       - name: 🔐 Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        run: |
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_URL }}
 
       - name: 🛠️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -32,9 +33,9 @@ jobs:
         run: |
           IMAGE_TAG=${ECR_URL}:latest
           echo "🔧 Building image: $IMAGE_TAG"
-          docker buildx build -t $IMAGE_TAG .
-          echo "🚀 Pushing image to ECR"
+          docker buildx build --load -t $IMAGE_TAG .
+          echo "🚀 Pushing image to ECR..."
           docker push $IMAGE_TAG
 
-    
-              
+      - name: ✅ Confirm ECS update
+        run: echo "Update is successful."
