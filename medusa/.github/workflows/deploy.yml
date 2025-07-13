@@ -36,6 +36,5 @@ jobs:
           echo "🚀 Pushing image to ECR"
           docker push $IMAGE_TAG
 
-      - name: 🧠 Run ECS update script
-        run:  echo " update is successfull"
+    
               
