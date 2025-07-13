@@ -34,5 +34,4 @@ jobs:
           echo "🚀 Pushing image to ECR..."
           docker push $IMAGE_TAG
 
-      - name: 🔄 Trigger ECS deployment
-        run: aws ecs update-service --cluster medusa-cluster --service medua-service --force-new-deployment
+      
