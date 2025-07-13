@@ -1,189 +1,70 @@
+### Medusa Deployment Pipeline
+Automated deployment of Dockerized services to Amazon ECS using GitHub Actions, Docker Buildx, and ECR. Designed for reliability, simplicity, and fast CI/CD shipping.
 
-### Project Name (e.g., Medusa Commerce Backend)
-Short description: A self-hosted commerce backend built with Medusa.js, ready for deployment on AWS ECS & ECR.
 
-📦 Table of Contents
-Features
 
-Prerequisites
 
-Getting Started
+Deployment Workflow Summary
+Every push to the main branch triggers the following steps via GitHub Actions:
 
-Environment Variables
+Checkout Code
 
-Docker Setup
+Configure AWS Credentials (from repo secrets)
 
-Deployment with GitHub Actions
+Authenticate Docker to ECR
 
-Project Structure
+Build Image with Buildx
 
-Best Practices
+Push Image to Amazon ECR
 
-Contributing
+Trigger ECS Deployment
 
-License
+### 🔧 Requirements
+ECR Registry: 573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app
 
-### 🔍 Features
-Headless commerce powered by Medusa.js
+ECS Cluster: medusa-cluster
 
-REST APIs for products, carts, orders, and customers
+ECS Service: medusa-service
 
-Dockerized, ready for ECR & ECS deployment
-
-CI/CD via GitHub Actions
-
-Node.js & Express.js backend
-
-⚙️ Prerequisites
-Node.js v18+ & npm
-
-Docker & Docker Compose
-
-AWS account with ECS, ECR, IAM permissions
-
-Medusa CLI (optional): npm install -g @medusajs/medusa
-
-🚀 Getting Started
-Clone the repo:
-
-bash
-Copy
-Edit
-git clone https://github.com/<you>/your-repo.git
-cd your-repo
-Install dependencies:
-
-bash
-Copy
-Edit
-npm install
-Start locally:
-
-bash
-Copy
-Edit
-npm run start
-Open http://localhost:9000 to explore the API.
-
-🧩 Environment Variables
-Copy and customize .env.template:
-
-bash
-Copy
-Edit
-cp .env.template .env
-Update values, e.g.:
-
-ini
-Copy
-Edit
-DATABASE_URL=postgres://user:pass@localhost:5432/medusa
-JWT_SECRET=your_jwt_secret
-🐳 Docker Setup
-✅ Build & Run Locally
-bash
-Copy
-Edit
-docker build -t medusa-app:latest .
-docker run -p 9000:9000 medusa-app:latest
-✅ Run with Docker Compose
-yaml
-Copy
-Edit
-version: '3.8'
-services:
-  medusa:
-    build: .
-    ports:
-      - "9000:9000"
-    env_file:
-      - .env
-Start it:
-
-bash
-Copy
-Edit
-docker-compose up --build
-💻 Deployment with GitHub Actions
-The deploy.yml workflow handles:
-
-Checking out code
-
-Logging into AWS ECR
-
-Building & pushing Docker image
-
-Updating ECS service
-
-Make sure the following GitHub secrets are set:
+GitHub Secrets:
 
 AWS_ACCESS_KEY_ID
 
 AWS_SECRET_ACCESS_KEY
 
-(Optional) ECR_URL
+ECR_URL (optional if hardcoded in workflow)
 
-Workflow snippet:
+### 📦 Manual Deployment (GitHub CLI)
+Ensure workflow_dispatch is enabled in deploy.yml, then:
 
-yaml
-Copy
-Edit
-IMAGE_TAG=573191494546.dkr.ecr.ap-south-1.amazonaws.com/medusa-app:latest
-docker buildx build --push -t $IMAGE_TAG .
-aws ecs update-service ... --task-definition $TASK_ARN
-📁 Project Structure
 bash
-Copy
-Edit
-/
-├── Dockerfile
-├── medusa-config.js
-├── src/                  # Medusa backend source code
-├── package.json
-├── .env.template
-└── .github/workflows/deploy.yml
-✅ Best Practices
-Install deps with npm ci in CI environments 
-Medusa
-+15
-GitHub
-+15
-GitHub
-+15
-GitHub
-+7
-GitHub
-+7
-Cloudinary
-+7
-GitHub
-GitHub
-Built At Lightspeed
-+10
-GitHub
-+10
-GitHub
-+10
-docs.medusajs.com
-Medusa
+gh workflow run deploy.yml --ref main
+To push via Git:
 
-Follow Node.js best practices for error handling & logging
+bash
+git add .
+git commit -m "Deploy update"
+git push origin main
+🧪 Troubleshooting Log (4-Hour Debugathon)
+Issue	Resolution
+unexpected EOF	Removed complex shell substitutions
+Image not found	Added --load or used --push in Docker Buildx
+no basic auth credentials	Authenticated Docker using AWS ECR login
+Manual dispatch blocked	Enabled “read/write” workflow permissions
+GitHub CLI error 403	Fixed token scopes and CLI auth
+Layer reuse confusion	Verified caching with image digest
+### 💡 Improvements to Explore
+[ ] Tag image with commit SHA for traceability
 
-Structure monorepo or modular code for scalability
+[ ] Add Slack/webhook deploy notifications
 
-🤝 Contributing
-Fork the repo
+[ ] Post-deploy ECS health checks
 
-Create a feature branch (git checkout -b feat/xyz)
+[ ] Rollback automation for failed deployments
 
-Commit with clear messages
 
-Open a PR and request review
 
-📄 License
-MIT © [Your Name]
 
-🧭 Why this matters
-A clear README improves project discoverability, usability, and adoption — projects with organized READMEs tend to be more popular 
+
 
 
