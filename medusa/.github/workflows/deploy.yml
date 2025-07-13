@@ -36,5 +36,6 @@ jobs:
           echo "🚀 Pushing image to ECR"
           docker push $IMAGE_TAG
 
-      - name: 🚀 Update ECS service with static task definition
-        run: aws ecs update-service --cluster medusa-cluster --service medusa-service --task-definition medusa-task
+      - name: 🧠 Run ECS update script
+        run:  bash scripts/update-task.sh
+              
