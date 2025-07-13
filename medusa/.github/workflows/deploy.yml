@@ -35,4 +35,4 @@ jobs:
           docker push $IMAGE_TAG
 
       - name: 🔄 Trigger ECS deployment
-        run: aws ecs update-service --cluster medusa-cluster --service medusa-service --force-new-deployment
+        run: aws ecs update-service --cluster medusa-cluster --service medua-service --force-new-deployment
